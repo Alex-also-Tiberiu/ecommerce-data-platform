@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: order-producer
+  kafka:
+    bootstrap-servers: localhost:9093
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      retries: 3
+
+server:
+  port: 8082
+
+#logging:
+#  level:
+#    com.panda: DEBUG
+#    org.springframework.kafka: INFO

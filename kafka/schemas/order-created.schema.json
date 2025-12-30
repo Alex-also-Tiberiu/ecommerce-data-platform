@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OrderCreated",
+  "description": "Event emitted when a new order is created",
+  "type": "object",
+  "required": ["order_id", "customer_id", "items", "price", "timestamp"],
+  "properties": {
+    "order_id": {
+      "type": "string",
+      "description": "Unique identifier for the order",
+      "pattern": "^[A-Z0-9-]+$"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Identifier of the customer who placed the order"
+    },
+    "items": {
+      "type": "array",
+      "description": "List of items in the order",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["product_id", "quantity", "unit_price"],
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "description": "Product identifier"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Quantity ordered",
+            "minimum": 1
+          },
+          "unit_price": {
+            "type": "number",
+            "description": "Price per unit",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "price": {
+      "type": "number",
+      "description": "Total order price",
+      "minimum": 0
+    },
+    "timestamp": {
+      "type": "integer",
+      "description": "Unix timestamp (milliseconds) when the order was created"
+    }
+  }
+}
