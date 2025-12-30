@@ -4,12 +4,12 @@ A comprehensive data engineering project that demonstrates the integration of mo
 
 ## Initialization Order
 
-1️⃣ Kafka
-2️⃣ Spring Boot Producer
-3️⃣ Spark batch (file)
-4️⃣ Spark Kafka
-5️⃣ Postgres
-6️⃣ Airflow
+1️⃣ Kafka<br>
+2️⃣ Spring Boot Producer<br>
+3️⃣ Spark batch (file)<br>
+4️⃣ Spark Kafka<br>
+5️⃣ Postgres<br>
+6️⃣ Airflow<br>
 
 ## Architecture
 
@@ -59,11 +59,16 @@ docker-compose up -d
 
 ## Docker commands
 
-# 3. Start
+1. Start
+```bash
 docker-compose up -d
+```
 
-# 1. Stop everything
+2. Stop everything
+```bash
 docker-compose down
-
-# 2. Delete volumes/networks (optional)
+```
+3. Delete volumes/networks (optional)
+```bash
 docker volume prune -f
+```
