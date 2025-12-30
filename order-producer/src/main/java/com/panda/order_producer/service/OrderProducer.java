@@ -38,7 +38,7 @@ public class OrderProducer {
                 log.info("Order sent successfully - orderId: {}, partition: {}, offset: {}",
                         orderId,
                         result.getRecordMetadata().partition(),
-                        result.getRecordMetadata().partition()
+                        result.getRecordMetadata().offset()
                 );
             }
             else {
