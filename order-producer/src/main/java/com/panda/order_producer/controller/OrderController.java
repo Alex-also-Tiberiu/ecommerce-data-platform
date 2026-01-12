@@ -25,7 +25,11 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<Map<String, String>> createOrder( @RequestBody OrderCreated orderRequest) {
-        log.debug("Request order create received");
+        String correlationId = UUID.randomUUID().toString();
+        long startTime = System.currentTimeMillis();
+
+        log.info("Order request received - correlationId: {}, customerId: {}",
+                correlationId, orderRequest.getCustomerId());
 
         try {
             // Generate order ID and timestamp
@@ -33,6 +37,7 @@ public class OrderController {
             Long timestamp = System.currentTimeMillis();
 
             OrderCreated order = OrderCreated.builder()
+                    .correlationId(correlationId)
                     .orderId(orderId)
                     .customerId(orderRequest.getCustomerId())
                     .items(orderRequest.getItems())
@@ -42,14 +47,21 @@ public class OrderController {
 
             orderProducer.sendOrderCreatedEvent(order);
 
+            long duration = System.currentTimeMillis() - startTime;
+            log.info("Order created successfully - correlationId: {}, orderId: {}, durationMs: {}",
+                    correlationId, orderId, duration);
+
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(Map.of(
                             "message", "Order created successfully",
-                            "order_id", orderId
+                            "order_id", orderId,
+                            "correlation_id", correlationId
                     ));
 
         } catch (JsonProcessingException ex) {
-            log.error("Failed to serialize order", ex);
+            long duration = System.currentTimeMillis() - startTime;
+            log.error("Failed to create order - correlationId: {}, durationMs: {}",
+                    correlationId, duration, ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Failed to process order"));
         }
     }

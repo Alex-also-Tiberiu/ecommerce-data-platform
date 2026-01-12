@@ -16,6 +16,9 @@ public class OrderCreated implements Serializable {
     @JsonProperty("order_id")
     private String orderId;
 
+    @JsonProperty("correlation_id")
+    private String correlationId;
+
     @JsonProperty("customer_id")
     private String customerId;
 

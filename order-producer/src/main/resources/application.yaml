@@ -8,11 +8,21 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
       acks: all
       retries: 3
+      # ====== IDEMPOTENCE
+      enable.idempotence: true    # Avoid dupplicate
+      # ====== RETRY BACKOFF
+      retry.backoff.ms: 100       # Initial backoff: 100ms
+      retry.backoff.max.ms: 32000 # Max backoff:     32s
+      # ====== OTHER PARAMS
+      compression.type: snappy    # Compression
+      delivery.timeout.ms: 120000 # Timeout: 2min
 
 server:
   port: 8082
 
-#logging:
-#  level:
-#    com.panda: DEBUG
-#    org.springframework.kafka: INFO
+logging:
+  level:
+    com.panda.order_producer: DEBUG           # Log code
+    org.springframework.web: INFO             # HTTP request/response
+    org.springframework.kafka: INFO           # Kafka client
+    org.apache.kafka: WARN                    # Kafka internals

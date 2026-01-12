@@ -1,6 +1,7 @@
 # E-Commerce Data Platform
 
 A comprehensive data engineering project that demonstrates the integration of modern technologies for real-time and batch data processing.
+This project simulates a production-grade data pipeline for an e-commerce platform, inspired by large-scale logistics companies. It ingests order events via Kafka, processes them using Spark, orchestrates workflows with Airflow and loads curated data into a data warehouse for analytics.
 
 ## Initialization Order
 
@@ -44,7 +45,16 @@ Analytics and Reporting
 docker-compose up -d
 ```
 
-2. Consult the documentation in `docs/` for details on architecture and data model
+2. Start the Order Producer (from `order-producer/` directory):
+```bash
+mvn spring-boot:run
+```
+
+3. Consult the documentation in `docs/` for details on architecture and data model
+
+## Documentation
+
+- **[Order Producer](docs/ORDER_PRODUCER.md)** - Complete guide to the Kafka producer, testing, retry strategy, and logging
 
 ## Technologies
 

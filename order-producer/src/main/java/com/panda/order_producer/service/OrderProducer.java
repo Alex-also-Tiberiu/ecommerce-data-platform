@@ -27,22 +27,32 @@ public class OrderProducer {
      * @throws JsonProcessingException if serialization fails
      */
     public void sendOrderCreatedEvent(OrderCreated order) throws JsonProcessingException {
-        String orderId = order.getOrderId();
-        String orderJson = objectMapper.writeValueAsString(order);
+        String correlationId = order.getCorrelationId();
+        String orderId       = order.getOrderId();
+        String orderJson     = objectMapper.writeValueAsString(order);
 
-        log.info("Sending order event - orderId: {}", orderId);
+        long startTime = System.currentTimeMillis();
+
+        log.debug("Preparing to send event - correlationId: {}, orderId: {}, size: {} bytes",
+                correlationId, orderId, orderJson.length());
+
         CompletableFuture<SendResult<String, String>> future = kafkaTemplate.send(TOPIC, orderId, orderJson);
 
         future.whenComplete((result, ex) -> {
+            long duration = System.currentTimeMillis() - startTime;
+
             if (ex == null) {
-                log.info("Order sent successfully - orderId: {}, partition: {}, offset: {}",
+                log.info("Event sent to Kafka - correlationId: {}, orderId: {}, partition: {}, offset: {}, durationMs: {}",
+                        correlationId,
                         orderId,
                         result.getRecordMetadata().partition(),
-                        result.getRecordMetadata().offset()
+                        result.getRecordMetadata().offset(),
+                        duration
                 );
             }
             else {
-                log.error("Failed to send order - orderId: {}, error: {}", orderId, ex.getMessage());
+                log.error("Failed to send event - correlationId: {}, orderId: {}, durationMs: {}, error: {}",
+                        correlationId, orderId, duration, ex.getMessage());
             }
         });
     }
