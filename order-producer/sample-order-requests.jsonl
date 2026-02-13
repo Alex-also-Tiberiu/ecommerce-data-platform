@@ -1,0 +1,5 @@
+{"customer_id":"CUST-100","items":[{"product_id":"P-101","quantity":1,"unit_price":799.99},{"product_id":"P-102","quantity":2,"unit_price":25.00}],"price":849.99}
+{"customer_id":"CUST-200","items":[{"product_id":"P-201","quantity":1,"unit_price":149.99}],"price":149.99}
+{"customer_id":"CUST-100","items":[{"product_id":"P-103","quantity":3,"unit_price":19.99}],"price":59.97}
+{"customer_id":"CUST-300","items":[{"product_id":"P-301","quantity":1,"unit_price":299.99}],"price":299.99}
+{"customer_id":"CUST-400","items":[{"product_id":"P-401","quantity":2,"unit_price":89.50},{"product_id":"P-402","quantity":1,"unit_price":39.00}],"price":218.00}

@@ -17,6 +17,8 @@ import java.util.concurrent.CompletableFuture;
 public class OrderProducer {
     private static final String TOPIC = "order-created";
 
+    // C:\Workspaces\Mine\ecommerce-data-platform\order-producer\sample-order-requests.jsonl
+
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
 

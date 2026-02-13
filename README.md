@@ -3,14 +3,37 @@
 A comprehensive data engineering project that demonstrates the integration of modern technologies for real-time and batch data processing.
 This project simulates a production-grade data pipeline for an e-commerce platform, inspired by large-scale logistics companies. It ingests order events via Kafka, processes them using Spark, orchestrates workflows with Airflow and loads curated data into a data warehouse for analytics.
 
-## Initialization Order
+## Platform Startup (Current)
 
-1️⃣ Kafka<br>
-2️⃣ Spring Boot Producer<br>
-3️⃣ Spark batch (file)<br>
-4️⃣ Spark Kafka<br>
-5️⃣ Postgres<br>
-6️⃣ Airflow<br>
+1. Start infrastructure (Kafka, Zookeeper, Postgres, Kafka UI, topic init):
+```powershell
+docker-compose up -d
+```
+
+2. Start the producer API:
+```powershell
+cd order-producer
+.\mvnw.cmd spring-boot:run
+```
+
+3. In another terminal, start Spark streaming (Docker profile):
+```powershell
+cd ..
+docker compose --profile spark up spark-stream
+```
+
+4. Send sample orders:
+```powershell
+Get-Content order-producer\sample-order-requests.jsonl | ForEach-Object {
+  Invoke-RestMethod -Method Post -Uri "http://localhost:8082/orders" -ContentType "application/json" -Body $_
+}
+```
+
+5. Stop services:
+```powershell
+docker compose --profile spark down
+docker-compose down
+```
 
 ## Architecture
 
@@ -67,18 +90,11 @@ mvn spring-boot:run
 - Python 3.8+
 
 
-## Docker commands
+## Docker Commands
 
-1. Start
-```bash
+```powershell
 docker-compose up -d
-```
-
-2. Stop everything
-```bash
+docker compose --profile spark up spark-stream -d
+docker compose --profile spark down
 docker-compose down
-```
-3. Delete volumes/networks (optional)
-```bash
-docker volume prune -f
 ```

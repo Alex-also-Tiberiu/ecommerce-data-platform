@@ -51,18 +51,19 @@ services:
     networks:
       - ecommerce-network
   
-  # kafka-init:
-  #   image: confluentinc/cp-kafka:7.4.0
-  #   depends_on:
-  #     - kafka
-  #   command: >
-  #     bash -c "
-  #     echo 'In attesa che Kafka sia pronto...' &&
-  #     cub kafka-ready -b kafka:9092 1 30 &&
-  #     echo 'Creazione topic...' &&
-  #     kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic order-created --partitions 3 --replication-factor 1 &&
-  #     echo 'Topic creato con successo!'"
-  #     "
+  kafka-init:
+    image: confluentinc/cp-kafka:7.4.0
+    depends_on:
+      - kafka
+    command: >
+      bash -c "
+      echo 'Waiting for Kafka...' &&
+      cub kafka-ready -b kafka:29092 1 60 &&
+      echo 'Creating topic order-created...' &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic order-created --partitions 3 --replication-factor 1 &&
+      echo 'Topic ready.'"
+    networks:
+      - ecommerce-network
 
   # Kafka UI - Optional monitoring interface
   kafka-ui:
@@ -78,6 +79,32 @@ services:
     networks:
       - ecommerce-network
 
+  # Spark structured streaming consumer (optional, reproducible runtime)
+  spark-stream:
+    image: apache/spark:3.5.1
+    depends_on:
+      - kafka
+      - kafka-init
+    working_dir: /workspace
+    command: >
+      /bin/bash -lc "mkdir -p /tmp/.ivy2/cache /tmp/.ivy2/jars &&
+      /opt/spark/bin/spark-submit
+      --conf spark.jars.ivy=/tmp/.ivy2
+      --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1
+      /workspace/spark-jobs/batch/process_orders_stream.py"
+    environment:
+      BOOTSTRAP_SERVERS: kafka:29092
+      TOPIC: order-created
+      STARTING_OFFSETS: latest
+      CHECKPOINT_ROOT: /workspace/spark-jobs/checkpoints/order-created
+      APP_LOG_LEVEL: INFO
+      SPARK_INTERNAL_LOG_LEVEL: ERROR
+    volumes:
+      - ./:/workspace
+    networks:
+      - ecommerce-network
+    profiles:
+      - spark
 
 volumes:
   postgres_data:
